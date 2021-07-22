@@ -88,35 +88,28 @@ public class EventoController {
     public String deletarConvidado(String rg){
         Convidado convidado = cr.findByRg(rg);
         cr.delete(convidado);
-
         Evento evento = convidado.getEvento();
         long codLong = evento.getCodigo();
         String codigo = "" + codLong;
         return "redirect:/"+codigo;
     }
 
-//    @RequestMapping(value = "/editarEvento", method =RequestMethod.GET)
-//    public ModelAndView editarEvento(@PathVariable("codigo") long codigo){
-//        Evento evento = er.findByCodigo(codigo);
-//        ModelAndView mv = new ModelAndView("evento/detalhesEvento");
-//        mv.addObject("evento",evento);
-//
-//        Iterable<Convidado> convidados = cr.findByEvento(evento);
-//        mv.addObject("convidados",convidados);
-//        return mv;
-//    }
+    @RequestMapping(value = "/evento/editarEvento/{codigo}", method = RequestMethod.GET)
+    public String  form1(){
+        return "evento/FormeditarEvento";
+    }
 
-//    @RequestMapping(value = "/editarEvento", method = RequestMethod.PUT)
-//    public String  form(@Valid Evento evento, @PathVariable long codigo,BindingResult result, RedirectAttributes attributes){
-//        if(result.hasErrors()){
-//            attributes.addFlashAttribute("mensagem","Verifique os campos!!");
-//            return "redirect:/editarEvento";
-//        }
-//        Evento evento1 = er.findByCodigo(codigo);
-//        er.save(evento);
-//        attributes.addFlashAttribute("mensagem","Atualizado com sucesso!!");
-//        return "redirect:/evento";
-//    }
-//
+
+    @RequestMapping(value = "/evento/editarEvento/{codigo}", method = RequestMethod.POST)
+    public String  form1(@PathVariable("codigo") long codigo,@Valid Evento evento, BindingResult result, RedirectAttributes attributes){
+        if(result.hasErrors()){
+            attributes.addFlashAttribute("mensagem","Verifique os campos!!");
+            return "redirect:/evento/editarEvento/{codigo}";
+        }
+        evento.setCodigo(codigo);
+        er.save(evento);
+        attributes.addFlashAttribute("mensagem","Atualizado com sucesso!!");
+        return "redirect:/evento/editarEvento/{codigo}";
+    }
 
 }
