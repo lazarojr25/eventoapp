@@ -4,20 +4,16 @@ import com.eventoapp.models.Convidado;
 import com.eventoapp.models.Evento;
 import com.eventoapp.repository.ConvidadoRepository;
 import com.eventoapp.repository.EventoRepository;
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.validation.Valid;
-import java.util.EventObject;
-import java.util.Optional;
+
 
 @Controller
 public class EventoController {
@@ -63,13 +59,6 @@ public class EventoController {
         return mv;
     }
 
-    @RequestMapping("/deletarEvento")
-    public String deletarEvento(long codigo){
-        Evento evento = er.findByCodigo(codigo);
-        er.delete(evento);
-        return "redirect:/evento";
-    }
-
 
     @RequestMapping(value = "/{codigo}", method =RequestMethod.POST)
     public String detalhesEventoPost(@PathVariable("codigo") long codigo, @Valid Convidado convidado, BindingResult result, RedirectAttributes attributes){
@@ -94,22 +83,32 @@ public class EventoController {
         return "redirect:/"+codigo;
     }
 
-    @RequestMapping(value = "/evento/editarEvento/{codigo}", method = RequestMethod.GET)
-    public String  form1(){
-        return "evento/FormeditarEvento";
+    @RequestMapping(value = "/editarEvento/{codigo}", method = RequestMethod.GET)
+    public ModelAndView editEvento(@PathVariable("codigo") long codigo){
+        Evento evento = er.findByCodigo(codigo);
+        ModelAndView mv = new ModelAndView("/evento/FormeditarEvento");
+        mv.addObject("evento",evento);
+        return mv;
     }
 
 
-    @RequestMapping(value = "/evento/editarEvento/{codigo}", method = RequestMethod.POST)
+    @RequestMapping(value = "/editarEvento/{codigo}", method = RequestMethod.POST)
     public String  form1(@PathVariable("codigo") long codigo,@Valid Evento evento, BindingResult result, RedirectAttributes attributes){
         if(result.hasErrors()){
             attributes.addFlashAttribute("mensagem","Verifique os campos!!");
-            return "redirect:/evento/editarEvento/{codigo}";
+            return "redirect:/editarEvento/{codigo}";
         }
         evento.setCodigo(codigo);
         er.save(evento);
         attributes.addFlashAttribute("mensagem","Atualizado com sucesso!!");
-        return "redirect:/evento/editarEvento/{codigo}";
+        return "redirect:/editarEvento/{codigo}";
+    }
+
+    @RequestMapping("/deletarEvento")
+    public String deletarEvento(long codigo){
+        Evento evento = er.findByCodigo(codigo);
+        er.delete(evento);
+        return "redirect:/evento";
     }
 
 }

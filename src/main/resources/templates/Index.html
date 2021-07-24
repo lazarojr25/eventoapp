@@ -43,7 +43,7 @@
             <td><span th:text="${evento.local}"></span></td>
             <td><span th:text="${evento.data}"></span></td>
             <td><span th:text="${evento.horario}"></span></td>
-                    <td><a th:href="@{/evento/editarEvento/{codigo}(codigo=${evento.codigo})}"><i class="material-icons left">create</i></a></td>
+                    <td><a th:href="@{/editarEvento/{codigo}(codigo=${evento.codigo})}"><i class="material-icons left">create</i></a></td>
                     <td><a th:href="@{/deletarEvento(codigo=${evento.codigo})}"><i class="material-icons left">delete</i></a></td>
                 </div>
             </tr>
